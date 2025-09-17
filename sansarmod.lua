@@ -11,6 +11,10 @@ logoButton.Font = Enum.Font.SourceSansBold
 logoButton.TextScaled = true
 logoButton.Draggable = true
 
+-- Yuvarlak köşe
+local UICornerLogo = Instance.new("UICorner", logoButton)
+UICornerLogo.CornerRadius = UDim.new(0, 10)
+
 -- Menü
 local menu = Instance.new("Frame", gui)
 menu.Size = UDim2.new(0, 250, 0, 150)
@@ -19,6 +23,9 @@ menu.BackgroundColor3 = Color3.fromRGB(30,30,30)
 menu.Visible = false
 menu.Active = true
 menu.Draggable = true
+
+local UICornerMenu = Instance.new("UICorner", menu)
+UICornerMenu.CornerRadius = UDim.new(0, 12)
 
 local title = Instance.new("TextLabel", menu)
 title.Size = UDim2.new(1, 0, 0.2, 0)
@@ -37,6 +44,9 @@ toggleFarm.TextColor3 = Color3.fromRGB(255,255,255)
 toggleFarm.Font = Enum.Font.SourceSans
 toggleFarm.TextScaled = true
 
+local UICornerFarm = Instance.new("UICorner", toggleFarm)
+UICornerFarm.CornerRadius = UDim.new(0, 8)
+
 local rejoinButton = Instance.new("TextButton", menu)
 rejoinButton.Size = UDim2.new(1, -20, 0.3, 0)
 rejoinButton.Position = UDim2.new(0, 10, 0.6, 0)
@@ -45,6 +55,9 @@ rejoinButton.BackgroundColor3 = Color3.fromRGB(50,50,50)
 rejoinButton.TextColor3 = Color3.fromRGB(255,255,255)
 rejoinButton.Font = Enum.Font.SourceSans
 rejoinButton.TextScaled = true
+
+local UICornerRejoin = Instance.new("UICorner", rejoinButton)
+UICornerRejoin.CornerRadius = UDim.new(0, 8)
 
 -- Menü Aç/Kapa
 logoButton.MouseButton1Click:Connect(function()
@@ -109,18 +122,26 @@ spawn(function()
     end
 end)
 
--- Auto Restart (Server değişince GUI tekrar gelsin, OFF durumda başlasın)
-local function resetGUI()
-    wait(2)
-    autoFarm = false
-    toggleFarm.Text = "Auto Farm: OFF"
-    menu.Visible = false
+-- Auto Restart (Server değişince script kendini tekrar açsın)
+local function autoReload()
+    spawn(function()
+        wait(3)
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/baba530/Sansarsv2/main/sansarmod.lua"))()
+    end)
 end
+game.Players.LocalPlayer.CharacterAdded:Connect(autoReload)
 
-if game.Players.LocalPlayer.Character then
-    resetGUI()
-end
-
-game.Players.LocalPlayer.CharacterAdded:Connect(function()
-    resetGUI()
+-- RGB Efekt (menü ve buton dışı)
+spawn(function()
+    while true do
+        for i = 0, 255, 5 do
+            menu.BorderSizePixel = 3
+            menu.BorderColor3 = Color3.fromRGB(255, i, i) -- kırmızı ton
+            toggleFarm.BorderSizePixel = 2
+            toggleFarm.BorderColor3 = Color3.fromRGB(255, 255-i, 255-i)
+            rejoinButton.BorderSizePixel = 2
+            rejoinButton.BorderColor3 = Color3.fromRGB(255, 255, i)
+            wait(0.05)
+        end
+    end
 end)
