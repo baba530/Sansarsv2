@@ -3,7 +3,8 @@ local gui = Instance.new("ScreenGui", game.CoreGui)
 
 local logoButton = Instance.new("TextButton", gui)
 logoButton.Size = UDim2.new(0, 180, 0, 40)
-logoButton.Position = UDim2.new(0.02, 0, 0.2, 0)
+-- soldaki 0.02 yerine sağa almak için 0.85 yaptım
+logoButton.Position = UDim2.new(0.75, 0, 0.2, 0)
 logoButton.Text = "SANSARSV2xFARM"
 logoButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 logoButton.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -18,7 +19,8 @@ UICornerLogo.CornerRadius = UDim.new(0, 10)
 -- Menü
 local menu = Instance.new("Frame", gui)
 menu.Size = UDim2.new(0, 250, 0, 150)
-menu.Position = UDim2.new(0.05, 0, 0.3, 0)
+-- soldaki 0.05 yerine sağa almak için 0.7 yaptım
+menu.Position = UDim2.new(0.7, 0, 0.3, 0)
 menu.BackgroundColor3 = Color3.fromRGB(30,30,30)
 menu.Visible = false
 menu.Active = true
@@ -122,26 +124,11 @@ spawn(function()
     end
 end)
 
--- Auto Restart (Server değişince script kendini tekrar açsın)
-local function autoReload()
-    spawn(function()
-        wait(3)
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/baba530/Sansarsv2/main/sansarmod.lua"))()
-    end)
-end
-game.Players.LocalPlayer.CharacterAdded:Connect(autoReload)
+-- Auto Restart (Redz Hub tarzı queue_on_teleport)
+local executor = syn or fluxus
+local queueteleport = queue_on_teleport or (executor and executor.queue_on_teleport)
 
--- RGB Efekt (menü ve buton dışı)
-spawn(function()
-    while true do
-        for i = 0, 255, 5 do
-            menu.BorderSizePixel = 3
-            menu.BorderColor3 = Color3.fromRGB(255, i, i) -- kırmızı ton
-            toggleFarm.BorderSizePixel = 2
-            toggleFarm.BorderColor3 = Color3.fromRGB(255, 255-i, 255-i)
-            rejoinButton.BorderSizePixel = 2
-            rejoinButton.BorderColor3 = Color3.fromRGB(255, 255, i)
-            wait(0.05)
-        end
-    end
-end)
+if type(queueteleport) == "function" then
+    local SourceCode = "loadstring(game:HttpGet('https://raw.githubusercontent.com/baba530/Sansarsv2/main/sansarmod.lua'))()"
+    pcall(queueteleport, SourceCode)
+end
