@@ -37,14 +37,14 @@ toggleFarm.TextColor3 = Color3.fromRGB(255,255,255)
 toggleFarm.Font = Enum.Font.SourceSans
 toggleFarm.TextScaled = true
 
-local toggleHop = Instance.new("TextButton", menu)
-toggleHop.Size = UDim2.new(1, -20, 0.3, 0)
-toggleHop.Position = UDim2.new(0, 10, 0.6, 0)
-toggleHop.Text = "Auto Hop: OFF"
-toggleHop.BackgroundColor3 = Color3.fromRGB(50,50,50)
-toggleHop.TextColor3 = Color3.fromRGB(255,255,255)
-toggleHop.Font = Enum.Font.SourceSans
-toggleHop.TextScaled = true
+local rejoinButton = Instance.new("TextButton", menu)
+rejoinButton.Size = UDim2.new(1, -20, 0.3, 0)
+rejoinButton.Position = UDim2.new(0, 10, 0.6, 0)
+rejoinButton.Text = "🔄 Rejoin Server"
+rejoinButton.BackgroundColor3 = Color3.fromRGB(50,50,50)
+rejoinButton.TextColor3 = Color3.fromRGB(255,255,255)
+rejoinButton.Font = Enum.Font.SourceSans
+rejoinButton.TextScaled = true
 
 -- Menü Aç/Kapa
 logoButton.MouseButton1Click:Connect(function()
@@ -53,17 +53,16 @@ end)
 
 -- Variables
 local autoFarm = false
-local autoHop = false
 
--- Toggle Buttons
+-- Toggle Farm
 toggleFarm.MouseButton1Click:Connect(function()
     autoFarm = not autoFarm
     toggleFarm.Text = "Auto Farm: " .. (autoFarm and "ON" or "OFF")
 end)
 
-toggleHop.MouseButton1Click:Connect(function()
-    autoHop = not autoHop
-    toggleHop.Text = "Auto Hop: " .. (autoHop and "ON" or "OFF")
+-- Rejoin Server
+rejoinButton.MouseButton1Click:Connect(function()
+    game:GetService("TeleportService"):Teleport(game.PlaceId)
 end)
 
 -- Functions
@@ -83,16 +82,12 @@ function getNearestMob()
     return closest
 end
 
+-- Mobil uyumlu Observation açma
 function activateObservation()
-    local key = Enum.KeyCode.E -- Observation tuşu (değiştirilebilir)
-    game:GetService("VirtualInputManager"):SendKeyEvent(true, key, false, game)
-    wait(0.1)
-    game:GetService("VirtualInputManager"):SendKeyEvent(false, key, false, game)
-end
-
-function hopServer()
-    local tpService = game:GetService("TeleportService")
-    tpService:Teleport(game.PlaceId)
+    local remote = game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):FindFirstChild("CommF_")
+    if remote then
+        remote:InvokeServer("EnableObservationHaki")
+    end
 end
 
 -- Main Loop
@@ -108,9 +103,6 @@ spawn(function()
                     end)
                     wait(0.5)
                 until not game.Players.LocalPlayer.PlayerGui:FindFirstChild("Dodge")
-                if autoHop then
-                    hopServer()
-                end
             end
         end
         wait(1)
@@ -121,9 +113,7 @@ end)
 local function resetGUI()
     wait(2)
     autoFarm = false
-    autoHop = false
     toggleFarm.Text = "Auto Farm: OFF"
-    toggleHop.Text = "Auto Hop: OFF"
     menu.Visible = false
 end
 
